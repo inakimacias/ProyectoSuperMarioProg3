@@ -1,31 +1,116 @@
 package clasesNoVisuales;
+import javax.swing.JPanel;
 
 import estructuras.JLabelMario;
 
-public class Mario {
-	protected int vida=3; //Atributo para saber la vida que tiene el personaje
-	protected int monedas=0; //Atributo que sirve como contador de las monedas que ha recogido el personaje
-	protected double posX; // Atributo que guarda la posición en X (horizontal)
-	protected double posY; // Atributo que guarda la posición en Y (vertical)
+
+/**
+ * Clase heredera de personaje que define las instancias lógicas de Mario
+ */
+
+public class Mario extends Personaje{
+	
 	private JLabelMario Grafico; // Atributo de etiqueta gráfica para mario
 	public boolean salto = false; // Atributo que guarda si Mario ha realizado un salto
 	public boolean caida = false; // Atributo que guarda si ha habido o no una caida
 	public boolean cont = true; // Atributo contador
 	public double gravedadFija = 0; // Atributo de gravedad fija
-	public double gravedad = 1; // Atributo de gravedad
+	public double gravedad = 859; // Atributo de gravedad
 	private Mundo mundo; // Atributo que guarda el mundo del juego
 	
+	/**  Crea un nuevo personaje de juego (Mario)
+	 */
 	
-	//CREA UN NUEVO PERSONAJE DE MARIO LÓGICO
 	public Mario() {
 		salto = false;
 		caida = false;
 		cont = true;
 		gravedadFija = 0;
-		gravedad = 1;
+		gravedad = 859;
 		Grafico = new JLabelMario();
 	}
 	
+	/** Devuelve el JLabel gráfico asociado al Mario de juego
+	 * @return	Etiqueta gráfica del Mario
+	 */
+	
+	public JLabelMario getGrafico() {
+		return Grafico;
+	}
+
+	/**
+	 * Getters y setters de los atributos de Mario
+	 * @return el atributo en cuestion
+	 */
+	
+	public void setPosX(double posX) {
+		super.setPosX(posX);
+		Grafico.setLocation((int) posX, Grafico.getY());
+
+	}
+
+	public void setPosY(double posY) {
+		super.setPosY(posY);
+		Grafico.setLocation((Grafico.getX()), (int) posY);
+	}
+	
+	
+	public boolean isCaida() {
+		return caida;
+	}
+
+
+
+	public boolean isCont() {
+		return cont;
+	}
+
+
+
+	public void setCaida(boolean caida) {
+		this.caida = caida;
+	}
+
+
+
+	public void setCont(boolean cont) {
+		this.cont = cont;
+	}
+	
+
+
+	public boolean isSalto() {
+		return salto;
+	}
+
+
+
+	public void setSalto(boolean salto) {
+		this.salto = salto;
+	}
+
+
+
+	public double getGravedad() {
+		return gravedad;
+	}
+
+
+
+	public void setGravedad(double gravedad) {
+		this.gravedad = gravedad;
+	}
+
+
+
+	public void setGrafico(JLabelMario grafico) {
+		Grafico = grafico;
+	}	
+
+	/**
+	 * Método que implementa el salto de este personaje 
+	 */
+
 //	public void saltoMario() {
 //		if (salto && cont) {
 //			gravedad = gravedad - 20;
@@ -35,6 +120,7 @@ public class Mario {
 //				caida = true;
 //			}
 //		}
+//		
 //		if (!mundo.apoyo() && this.getPosY() != 860 && !salto) {
 //			caida = true;
 //		}
@@ -51,123 +137,5 @@ public class Mario {
 //			}
 //		}
 //	}
-
-	//GETTERS Y SETTERS--------------------------------------------------GETTERS Y SETTERS
-	public JLabelMario getGrafico() {
-		return Grafico;
-	}
-
-
-	public void setGrafico(JLabelMario grafico) {
-		Grafico = grafico;
-	}
-
-
-	public boolean isSalto() {
-		return salto;
-	}
-
-
-	public void setSalto(boolean salto) {
-		this.salto = salto;
-	}
-
-
-	public boolean isCaida() {
-		return caida;
-	}
-
-
-	public void setCaida(boolean caida) {
-		this.caida = caida;
-	}
-
-
-	public boolean isCont() {
-		return cont;
-	}
-
-
-	public void setCont(boolean cont) {
-		this.cont = cont;
-	}
-
-
-	public double getGravedadFija() {
-		return gravedadFija;
-	}
-
-
-	public void setGravedadFija(double gravedadFija) {
-		this.gravedadFija = gravedadFija;
-	}
-
-
-	public double getGravedad() {
-		return gravedad;
-	}
-
-
-	public void setGravedad(double gravedad) {
-		this.gravedad = gravedad;
-	}
-
-
-	public Mundo getMundo() {
-		return mundo;
-	}
-
-
-	public void setMundo(Mundo mundo) {
-		this.mundo = mundo;
-	}
-
-
-	public int getVida() {
-		return vida;
-	}
-
-
-	public void setVida(int vida) {
-		this.vida = vida;
-	}
-
-
-	public int getMonedas() {
-		return monedas;
-	}
-
-
-	public void setMonedas(int monedas) {
-		this.monedas = monedas;
-	}
-
-
-	public double getPosX() {
-		return posX;
-	}
-	
-	public void setPosicion(double posX, double posY) {
-		setPosX(posX);
-		setPosY(posY);
-	}
-
-	public void setPosX(double posX) {
-		this.posX = posX;
-		Grafico.setLocation((int) posX, Grafico.getY());
-	}
-
-	public void setPosY(double posY) {
-		this.posY = posY;
-		Grafico.setLocation((Grafico.getX()), (int) posY);
-	}
-	
-	public double getPosY() {
-		return posY;
-	}
-
-
-
-	
-	
 }
+
