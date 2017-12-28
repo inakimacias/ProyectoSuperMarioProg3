@@ -35,8 +35,9 @@ public class VJuego extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanelFondo pPrincipal;
 	boolean[] teclaPulsada = new boolean[4];
-	boolean impedimento=false;
 	boolean finalVisto=false;
+	boolean puedesDerecha=true;
+	boolean puedesIzquierda=true;
 	Mundo Mundo; // Mundo que crearemos
 	Mario Mario; // Mario del juego
 	MiRunnable miHilo = null; // Hilo del bucle principal de juego
@@ -169,7 +170,7 @@ public class VJuego extends JFrame {
 	
 		this.Mundo = new Mundo(this.pPrincipal);
 		this.Mario = new Mario();
-		this.Mundo.creaMario(145, 302);
+		this.Mundo.creaMario(145, 250);
 		this.Mario = this.Mundo.getMario();
 		this.Mundo.creaBloque();
 		this.Mundo.crearCaida();
@@ -180,64 +181,115 @@ public class VJuego extends JFrame {
 	}
 	
 	
-	class MiRunnable implements Runnable {
+	class MiRunnable implements Runnable { //EL HILO SE EJECUTA CADA 28 MILISEGUNDOS
 		boolean sigo = true;
 		@Override
 		public void run() { // Bucle principal forever hasta que se pare el juego...
 			InicializadorArray();
-			
 			while (sigo) {
+				try {
+					pPrincipal.repaint();
+					Thread.sleep(53);
+					pPrincipal.repaint();
+				} catch (Exception e) {
+				}
 				
-			pPrincipal.repaint();
-			
+				System.out.println(Mario.velY);
 			//Interacciones con los ladrillos(setas,goombas etc) FALTA
 			
+				// GRAVEDAD	VERTICAL
+				// GRAVEDAD VERTICAL
+			Mario.setPosY(Mario.getPosY()+Mario.velY);
+			
+			if(Mundo.apoyo){
+				Mario.velY=0;
+			}
+			
+			if(!Mundo.apoyo){
+				Mario.velY=1;
+			}
+			
+				// FINAL
+				// FINAL
 			if(Mario.getPosX()>1250){
 				acaba();
 				VentJuego.dispose();
 				
 			}
-			
-			if (!impedimento) {
-				if(!teclaPulsada[0] && !teclaPulsada[1] && !teclaPulsada[2]){
-					if(!Mario.getGrafico().EsEspejo()){
-						Mario.getGrafico().setComponentOrientationMarioQuieto();
-					}
-					if(Mario.getGrafico().EsEspejo()){
-						Mario.getGrafico().setComponentOrientationMarioQuietoEspejo();
-					}
-				}
-			}
-			
 			if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
 				finalVisto=true;
 			}
 			
-			if (!impedimento) {
+				// QUIETO
+				// QUIETO
+			if(!teclaPulsada[0] && !teclaPulsada[1] && !teclaPulsada[2] && !Mario.salto){
+				if(!Mario.getGrafico().EsEspejo()){
+					Mario.getGrafico().setComponentOrientationMarioQuieto();
+				}
+				if(Mario.getGrafico().EsEspejo()){
+					Mario.getGrafico().setComponentOrientationMarioQuietoEspejo();
+				}
+			}
+				//CORRECCION DE INTERSECCIONES
+				//CORRECCION DE INTERSECCIONES
+			if(Mundo.interseccion()){
+				puedesDerecha=false;
+			}
+			if(teclaPulsada[0] || teclaPulsada[2]){
+				puedesDerecha=true;
+			}
+			if(Mundo.interseccion2()){
+				puedesIzquierda=false;
+			}
+			if(teclaPulsada[0] || teclaPulsada[1]){
+				puedesIzquierda=true;
+			}
+			if(Mundo.interseccion3()){
+				Mundo.apoyo=true;
+			}
+				//SALTO
+				//SALTO
+			if(Mario.velY==0){
+				Mario.salto=false;
+			}
+			if (Mundo.apoyo){
+				if (teclaPulsada[0]){
+					Mario.getGrafico().setComponentOrientationSalto();
+					Mundo.apoyo=false;
+					Mario.salto=true;
+					Mario.velY=Mario.velY-2;
+					
+				
+				}
+			}
+			
+				// DERECHA
+				// DERECHA
+			if (!Mundo.interseccion() && puedesDerecha) {
 				if (teclaPulsada[1]) {
-					System.out.println(pPrincipal.getVar());
+//					System.out.println(pPrincipal.getVar());
 					Mario.getGrafico().setComponentOrientationNormal();
 					if(finalVisto==false){
-						pPrincipal.setVar(pPrincipal.getVar()-40);
-						Mundo.moverObjetoI();
+						pPrincipal.setVar(pPrincipal.getVar()-1);
+						Mundo.moverObjetoI(1);
 					}
 					
 					if(finalVisto==true){
-						Mario.setPosX(Mario.getPosX()+40);
+						Mario.setPosX(Mario.getPosX()+1);
 					}
 				}
 			}
-
-				if (!impedimento) {
+//				 IZQUIERDA
+//				 IZQUIERDA
+				if (!Mundo.interseccion2()) {
 					if (teclaPulsada[2]) {
 						Mario.getGrafico().setComponentOrientationEspejo();
-						System.out.println(pPrincipal.getVar());
 						if(pPrincipal.getVar() < 0 && finalVisto==false){
-							pPrincipal.setVar(pPrincipal.getVar()+40);
-							Mundo.moverObjetoD();
+							pPrincipal.setVar(pPrincipal.getVar()+1);
+							Mundo.moverObjetoD(1);
 						}
 						if(finalVisto==true){
-							Mario.setPosX(Mario.getPosX()-40);
+							Mario.setPosX(Mario.getPosX()-1);
 						}
 					}
 				}
@@ -299,15 +351,6 @@ public class VJuego extends JFrame {
 //					Mario.salto = false;
 //					sigo=false;
 //				}
-					
-				// Dormir el hilo 30 milisegundos
-				try {
-					pPrincipal.repaint();
-					Thread.sleep(27);
-					pPrincipal.repaint();
-				} catch (Exception e) {
-					
-				}
 			}
 		}
 		/** Ordena al hilo detenerse en cuanto sea posible

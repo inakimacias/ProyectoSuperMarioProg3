@@ -14,9 +14,9 @@ public class Mario extends Personaje{
 	public boolean salto = false; // Atributo que guarda si Mario ha realizado un salto
 	public boolean caida = false; // Atributo que guarda si ha habido o no una caida
 	public boolean cont = true; // Atributo contador
-	public double gravedadFija = 0; // Atributo de gravedad fija
-	public double gravedad = 859; // Atributo de gravedad
 	private Mundo mundo; // Atributo que guarda el mundo del juego
+	public int velY=0;
+	public int velX=0;
 	
 	/**  Crea un nuevo personaje de juego (Mario)
 	 */
@@ -25,9 +25,9 @@ public class Mario extends Personaje{
 		salto = false;
 		caida = false;
 		cont = true;
-		gravedadFija = 0;
-		gravedad = 859;
 		Grafico = new JLabelMario();
+		velY = 0;
+		velX = 0;
 	}
 	
 	/** Devuelve el JLabel gráfico asociado al Mario de juego
@@ -88,20 +88,6 @@ public class Mario extends Personaje{
 	public void setSalto(boolean salto) {
 		this.salto = salto;
 	}
-
-
-
-	public double getGravedad() {
-		return gravedad;
-	}
-
-
-
-	public void setGravedad(double gravedad) {
-		this.gravedad = gravedad;
-	}
-
-
 
 	public void setGrafico(JLabelMario grafico) {
 		Grafico = grafico;

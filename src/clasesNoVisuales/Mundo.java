@@ -6,10 +6,14 @@ import javax.swing.JPanel;
 
 import estructuras.JLabelBloque;
 import estructuras.JLabelCaida;
+import estructuras.JPanelFondo;
 
 public class Mundo {
-	private JPanel panel; // Atributo del panel visual del juego
+	public JPanelFondo panel; // Atributo del panel visual del juego
 	static Mario Mario; // Atributo que contiene al Mario del juego
+	public boolean puedesDerecha=true;
+	public boolean puedesIzquierda=true;
+	public boolean apoyo=false;
 	
 	JLabelBloque Bloque = new JLabelBloque(); // Atributo Jlabel para bloque
 	JLabelCaida Caida = new JLabelCaida(); // Atributo Jlabel para caida
@@ -17,7 +21,7 @@ public class Mundo {
 	static ArrayList<JLabelBloque> aBloques = new ArrayList(); //Aray que guarda los bloques
 	static ArrayList<JLabelCaida> aCaida = new ArrayList(); // Array que guarda las caidas de Mario
 	
-	public Mundo(JPanel panel) {
+	public Mundo(JPanelFondo panel) {
 		aBloques = new ArrayList(); 
 		aCaida = new ArrayList(); 
 		this.panel = panel;
@@ -37,6 +41,7 @@ public class Mundo {
 	}
 	
 	public void creaBloque() {
+		
 		for(int i=5; i<2000; i=i+28){
 			Bloque = new JLabelBloque();
 			Bloque.setLocation(i,334);
@@ -329,12 +334,12 @@ public class Mundo {
 	 * hacia la izquierda
 	 * 
 	 */
-	public void moverObjetoI() {
+	public void moverObjetoI(int pixels) {
 		for (int i = 0; i < aBloques.size(); i++) {
-			aBloques.get(i).move(aBloques.get(i).getX() - 40, (aBloques.get(i).getY()));
+			aBloques.get(i).move(aBloques.get(i).getX() - pixels, (aBloques.get(i).getY()));
 		}
 		for (int o = 0; o < aCaida.size(); o++) {
-			aCaida.get(o).move(aCaida.get(o).getX() - 40, (aCaida.get(o).getY()));
+			aCaida.get(o).move(aCaida.get(o).getX() - pixels, (aCaida.get(o).getY()));
 		}
 	}
 	/**
@@ -342,12 +347,12 @@ public class Mundo {
 	 * hacia la derecha
 	 * 
 	 */
-	public void moverObjetoD() {
+	public void moverObjetoD(int pixels) {
 		for (int i = 0; i < aBloques.size(); i++) {
-			aBloques.get(i).move(aBloques.get(i).getX() + 40, (aBloques.get(i).getY()));
+			aBloques.get(i).move(aBloques.get(i).getX() + pixels, (aBloques.get(i).getY()));
 		}
 		for (int o = 0; o < aCaida.size(); o++) {
-			aCaida.get(o).move(aCaida.get(o).getX() + 40, (aCaida.get(o).getY()));
+			aCaida.get(o).move(aCaida.get(o).getX() + pixels, (aCaida.get(o).getY()));
 		}
 	}
 	
@@ -375,13 +380,16 @@ public class Mundo {
 		for (int j = 0; j < aBloques.size(); j++) {
 			if (Mario.getGrafico().getBounds().intersects(aBloques.get(j).getBounds())
 					&& Mario.getPosX()<aBloques.get(j).getX()) {
+				panel.var=panel.var-(int)(aBloques.get(j).getX()-(Mario.getPosX()+23));
+				moverObjetoI((int)(aBloques.get(j).getX()-(Mario.getPosX()+23)));
 				return true;
 			}
 		}
 		return false;
 	}
+	
 	/**
-	 * Método para la interseccion del choque horizontal
+	 * Método para la interseccion del choque horizontal por la 
 	 * @return si hay o no interseccion
 	 * 
 	 */
@@ -389,6 +397,20 @@ public class Mundo {
 		for (int j = 0; j < aBloques.size(); j++) {
 			if (Mario.getGrafico().getBounds().intersects(aBloques.get(j).getBounds())
 					&& Mario.getPosX()>aBloques.get(j).getX()) {
+//				panel.var=panel.var+(int)(Mario.getPosX()-aBloques.get(j).getX()+28);
+//				moverObjetoD((int)(Mario.getPosX()-aBloques.get(j).getX()+28));
+				return true;
+				
+			}
+		}
+		return false;
+	}
+	
+	public boolean interseccion3() {
+		for (int j = 0; j < aBloques.size(); j++) {
+			if (Mario.getGrafico().getBounds().intersects(aBloques.get(j).getBounds())
+					&& Mario.getPosY()<aBloques.get(j).getY()) {
+				apoyo=true;
 				return true;
 			}
 		}
@@ -399,34 +421,34 @@ public class Mundo {
 	 * @return si hay o no apoyo
 	 * 
 	 */
-	public static boolean apoyo() {
-		for (int i = 0; i < aBloques.size(); i++) {
-			if (Mario.getGrafico().getBounds().intersects(aBloques.get(i).getBounds())
-					&& Mario.getPosY() <= aBloques.get(i).getY() - 100) {
-				Mario.gravedad = Mario.gravedad - 20;
-				Mario.setPosY(Mario.gravedad);
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Método para saber si hay un choque vertical con algunos de los objetos del mundo
-	 * @return si hay o no choque vertical cn dicho objeto
-	 * 
-	 */
-	public boolean choqueV() {
-		for (int i = 0; i < aBloques.size(); i++) {
-			if(aBloques.get(i).getY()<=660){
-				if (Mario.getGrafico().getBounds().intersects(aBloques.get(i).getBounds())
-						&& Mario.getPosY() > aBloques.get(i).getY() && Mario.getPosY() < 860) {
-					Mario.gravedad = Mario.getGravedad() + 20;
-					Mario.setSalto(false);
-					Mario.setCaida(true);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	public static boolean apoyo() {
+//		for (int i = 0; i < aBloques.size(); i++) {
+//			if (Mario.getGrafico().getBounds().intersects(aBloques.get(i).getBounds())
+//					&& Mario.getPosY() <= aBloques.get(i).getY() - 100) {
+//				Mario.gravedad = Mario.gravedad - 20;
+//				Mario.setPosY(Mario.gravedad);
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+//	/**
+//	 * Método para saber si hay un choque vertical con algunos de los objetos del mundo
+//	 * @return si hay o no choque vertical cn dicho objeto
+//	 * 
+//	 */
+//	public boolean choqueV() {
+//		for (int i = 0; i < aBloques.size(); i++) {
+//			if(aBloques.get(i).getY()<=660){
+//				if (Mario.getGrafico().getBounds().intersects(aBloques.get(i).getBounds())
+//						&& Mario.getPosY() > aBloques.get(i).getY() && Mario.getPosY() < 860) {
+//					Mario.gravedad = Mario.getGravedad() + 20;
+//					Mario.setSalto(false);
+//					Mario.setCaida(true);
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 }
