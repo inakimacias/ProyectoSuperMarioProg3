@@ -12,8 +12,6 @@ public class JLabelBloque extends JLabel {
 	private static final long serialVersionUID = 1L; // Para serialización
 	
 	public static final int TAMANYO_BLOQUE = 28; // píxels (igual ancho que largo)
-
-	private static final boolean DIBUJAR_RECTANGULO_BLOQUE = false; // Dibujado (paradepuración)del bounding rectangle del bloque
 	
 	
 
@@ -22,6 +20,7 @@ public class JLabelBloque extends JLabel {
 	 */
 	
 	public JLabelBloque() {
+		
 		try {
 
 			setIcon(new ImageIcon(JLabelMario.class.getResource("/Imagenes/bloqueMario.png").toURI().toURL()));
@@ -29,6 +28,7 @@ public class JLabelBloque extends JLabel {
 			System.err.println("Error en carga de recurso: bloqueMario.jpg no encontrado");
 			e.printStackTrace();
 		}
+		setVisible(true);
 		setBounds(0, 0, TAMANYO_BLOQUE+1, TAMANYO_BLOQUE+1);
 
 	}
@@ -50,9 +50,6 @@ public class JLabelBloque extends JLabel {
 		// Prepara rotación (siguientes operaciones se rotarán)
 		// Dibujado de la imagen
 		g2.drawImage(img, 0, 0, TAMANYO_BLOQUE, TAMANYO_BLOQUE, null);
-		
-		if (DIBUJAR_RECTANGULO_BLOQUE)
-			g2.drawRect(0,0,TAMANYO_BLOQUE,TAMANYO_BLOQUE);	
-			}
-
+	
+	}
 }

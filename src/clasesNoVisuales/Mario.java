@@ -11,12 +11,12 @@ import estructuras.JLabelMario;
 public class Mario extends Personaje{
 	
 	private JLabelMario Grafico; // Atributo de etiqueta gráfica para mario
-	public boolean salto = false; // Atributo que guarda si Mario ha realizado un salto
-	public boolean caida = false; // Atributo que guarda si ha habido o no una caida
-	public boolean cont = true; // Atributo contador
+	public boolean salto; // Atributo que guarda si Mario ha realizado un salto
+	public boolean caida; // Atributo que guarda si ha habido o no una caida
+	public boolean cont; // Atributo contador
 	private Mundo mundo; // Atributo que guarda el mundo del juego
-	public int velY=0;
-	public int velX=0;
+	public int velY;
+	public int velX;
 	
 	/**  Crea un nuevo personaje de juego (Mario)
 	 */
@@ -27,7 +27,7 @@ public class Mario extends Personaje{
 		cont = true;
 		Grafico = new JLabelMario();
 		velY = 0;
-		velX = 0;
+		velX = 1;
 	}
 	
 	/** Devuelve el JLabel gráfico asociado al Mario de juego
