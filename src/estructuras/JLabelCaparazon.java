@@ -8,10 +8,10 @@ import java.awt.RenderingHints;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class JLabelBloque extends JLabel {
+public class JLabelCaparazon extends JLabel {
 	private static final long serialVersionUID = 1L; // Para serialización
 	
-	public static final int TAMANYO_BLOQUE = 28; // píxels (igual ancho que largo)
+	public static final int TAMANYO_BLOQUE = 24; // píxels (igual ancho que largo)
 	
 	
 
@@ -19,17 +19,17 @@ public class JLabelBloque extends JLabel {
 	 * Construye y devuelve el JLabel del Bloque con su gráfico y tamaño
 	 */
 	
-	public JLabelBloque() {
+	public JLabelCaparazon() {
 		
 		try {
 
-			setIcon(new ImageIcon(JLabelBloque.class.getResource("/Imagenes/bloqueMario.png").toURI().toURL()));
+			setIcon(new ImageIcon(JLabelCaparazon.class.getResource("/imagenes/CaparazonVerde.png").toURI().toURL()));
 		} catch (Exception e) {
-			System.err.println("Error en carga de recurso: bloqueMario.jpg no encontrado");
+			System.err.println("Error en carga de recurso: CaparazonVerde.png no encontrado");
 			e.printStackTrace();
 		}
 		setVisible(true);
-		setBounds(0, 0, TAMANYO_BLOQUE+1, TAMANYO_BLOQUE+1);
+		setBounds(0, 0, TAMANYO_BLOQUE, TAMANYO_BLOQUE);
 
 	}
 	

@@ -8,8 +8,6 @@ import java.awt.RenderingHints;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import interfaces.IEstructuras;
-
 public class JLabelMario extends JLabel {
 	private static final long serialVersionUID = 8L; // Para serialización
 	

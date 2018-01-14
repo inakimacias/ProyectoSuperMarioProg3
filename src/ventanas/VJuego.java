@@ -1,5 +1,7 @@
 package ventanas;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Image;
@@ -36,7 +38,13 @@ public class VJuego extends JFrame {
 	private JPanelFondo pPrincipal;
 	boolean[] teclaPulsada = new boolean[4];
 	boolean finalVisto=false;
-	int velocidadMario=1;
+	boolean MarioAndando=false;
+	int estadoMoneda=0;
+	AudioClip ClipNivel= Applet.newAudioClip(this.getClass().getResource("/sonidos/Level1Song.wav"));
+	AudioClip ClipSalto= Applet.newAudioClip(this.getClass().getResource("/sonidos/Salto.wav"));
+	AudioClip ClipMuerte= Applet.newAudioClip(this.getClass().getResource("/sonidos/Muerte.wav"));
+	AudioClip ClipMoneda1= Applet.newAudioClip(this.getClass().getResource("/sonidos/Moneda.wav"));
+	AudioClip ClipMoneda2= Applet.newAudioClip(this.getClass().getResource("/sonidos/Moneda.wav"));
 	Mundo Mundo; // Mundo que crearemos
 	Mario Mario; // Mario del juego
 	MiRunnable miHilo = null; // Hilo del bucle principal de juego
@@ -52,6 +60,7 @@ public class VJuego extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
 	public VJuego(VentanaMenuPrincipal vmp) {
 		
 		setResizable(false);
@@ -171,14 +180,14 @@ public class VJuego extends JFrame {
 		
 		this.Mundo = new Mundo(this.pPrincipal);
 		this.Mario = new Mario();
-		this.Mundo.creaMario(145,280);
+		this.Mundo.creaMario(145,290);
 		this.Mario = this.Mundo.getMario();
 		this.Mundo.creaBloque();
-		this.Mundo.crearCaida();
 		this.Mundo.creaRectangles();
-		
-		this.Mundo.seleccionarAudio("Level1Song.wav");
-		this.Mundo.reproducirAudio();
+		this.Mundo.creaMonedas();
+		this.Mundo.creaCaparazones();
+		this.Mundo.creaGoombas();
+		ClipNivel.loop();
 		
 		this.miHilo = this.new MiRunnable(); 	// Sintaxis de new para clase interna
 		Thread nuevoHilo = new Thread(this.miHilo);
@@ -199,8 +208,24 @@ public class VJuego extends JFrame {
 				} catch (Exception e) {
 				}
 			//Interacciones con los ladrillos(setas,goombas etc) FALTA
-			
-			
+				
+				//MONEDAS
+				//MONEDAS
+			if(Mundo.interseccionMonedasPares()){
+				ClipMoneda1.play();
+			}
+			if(Mundo.interseccionMonedasImpares()){
+				ClipMoneda2.play();
+			}
+			Mundo.mueveMonedas();
+			Mundo.EstadoMonedas++;
+			if(Mundo.EstadoMonedas==100){
+				Mundo.EstadoMonedas=0;
+			}
+				// CORRECCION DE COLISIONES
+				// CORRECCION DE COLISIONES
+			Mundo.interseccionEsquinasArriba();
+			Mundo.interseccionEsquinasAbajo();
 				// FINAL
 				// FINAL
 			if(Mario.getPosX()>1250){
@@ -224,9 +249,10 @@ public class VJuego extends JFrame {
 			}
 				// GRAVEDAD	VERTICAL SALTOS
 				// GRAVEDAD VERTICAL SALTOS
-			System.out.println(Mario.velY);
+
 			Mario.setPosY(Mario.getPosY()+Mario.velY);
 			if (Mario.getPosY()>400){
+				ClipMuerte.play();
 				acaba();
 			}
 			if (Mundo.interseccionArriba()){
@@ -235,6 +261,7 @@ public class VJuego extends JFrame {
 					Mario.getGrafico().setComponentOrientationSalto();
 					Mario.salto=true;
 					Mario.velY=Mario.velY-1;
+					ClipSalto.play();
 				}
 			}
 			
@@ -243,12 +270,13 @@ public class VJuego extends JFrame {
 				Mario.velY=Mario.velY+((int)Mundo.gravedadAcumulada);
 			}
 			
-			if((int)Mundo.gravedadAcumulada>=1){
+			if((int)Mundo.gravedadAcumulada>=1 || Mundo.interseccionArriba()){
 				Mundo.gravedadAcumulada=0;
 			}
 			
 			if(Mario.velY==0){
 				Mario.salto=false;
+				
 			}
 			
 			if(!Mundo.interseccionArriba() && !Mario.salto){
@@ -259,100 +287,85 @@ public class VJuego extends JFrame {
 				Mario.velY=0;
 			}
 			
-				// DERECHA
-				// DERECHA
-			if (!Mundo.interseccionIzquierda()) {
-				if (teclaPulsada[1]) {
-//					System.out.println(pPrincipal.getVar());
-					Mario.getGrafico().setComponentOrientationNormal();
-					if(finalVisto==false){
-						pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
-						Mundo.moverObjetoI(Mario.velX);
+			// DERECHA
+			// DERECHA
+		if (!Mundo.interseccionIzquierda()) {
+			if (teclaPulsada[1]) {
+//				System.out.println(pPrincipal.getVar());
+				Mario.getGrafico().setComponentOrientationNormal();
+				if(finalVisto==false){
+					pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
+					Mundo.moverObjetoI(Mario.velX);
+				}
+				
+				if(finalVisto==true){
+					Mario.setPosX(Mario.getPosX()+Mario.velX);
+				}
+			}
+		}
+//			 IZQUIERDA
+//			 IZQUIERDA
+			if (!Mundo.interseccionDerecha()) {
+				if (teclaPulsada[2]) {
+					Mario.getGrafico().setComponentOrientationEspejo();
+					if(pPrincipal.getVar() < 0 && finalVisto==false){
+						pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
+						Mundo.moverObjetoD(Mario.velX);
 					}
-					
 					if(finalVisto==true){
-						Mario.setPosX(Mario.getPosX()+Mario.velX);
+						Mario.setPosX(Mario.getPosX()-Mario.velX);
 					}
 				}
 			}
-//				 IZQUIERDA
-//				 IZQUIERDA
-				if (!Mundo.interseccionDerecha()) {
-					if (teclaPulsada[2]) {
-						Mario.getGrafico().setComponentOrientationEspejo();
-						if(pPrincipal.getVar() < 0 && finalVisto==false){
-							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
-							Mundo.moverObjetoD(Mario.velX);
-						}
-						if(finalVisto==true){
-							Mario.setPosX(Mario.getPosX()-Mario.velX);
-						}
-					}
-				}
-				pPrincipal.repaint();
+			pPrincipal.repaint();
 			
-				
-//				
-//				if (teclaPulsada[0]) {
-//					System.out.println("Mario.salto = "+Mario.salto+" Mario.caida = "+Mario.caida+" Mundo.choqueV = "+Mundo.choqueV());
-//					if (!Mario.salto && !Mundo.choqueV() && !Mario.caida && !Mundo.caida()) {
-//						Mario.gravedad = Mario.getPosY();
-//						Mario.gravedadFija = Mario.getPosY();
-//						Mario.salto = true;
-//						Mario.cont = true;
-//						if (Mario.getGrafico().EsEspejo()) {
-//							Mario.getGrafico().setComponentOrientationSalto();
-//						} else {
-//							Mario.getGrafico().setComponentOrientationSaltoEspejo();
-//							repaint();
-//						}
+//				// DERECHA
+//				// DERECHA
+//			if (!Mundo.interseccionIzquierda()) {
+//				if (teclaPulsada[1]) {
+//					Mario.getGrafico().setComponentOrientationNormal();
+//					if(pPrincipal.getVar() > (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320
+//							&& Mario.getPosX()>=150){
+//						pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
+//						Mundo.moverObjetoI(Mario.velX);
+//						Mario.setPosX(Mario.getPosX()-Mario.velX);
+//						pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
+//						Mundo.moverObjetoI(Mario.velX);
+//					}else if(pPrincipal.getVar() > (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320
+//							&& Mario.getPosX()<150){
+//						pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
+//						Mundo.moverObjetoI(Mario.velX);
+//					}else if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
+//						Mario.setPosX(Mario.getPosX()+Mario.velX);
 //					}
 //				}
-//				
-//				if (!Mundo.interseccion()) {
-//					if ((teclaPulsada[1] && !teclaPulsada[0]) || (teclaPulsada[1] && teclaPulsada[0])) {
-//						Mario.getGrafico().setComponentOrientationNormal();
-//						((JPanelFondo) pPrincipal).setVar(((JPanelFondo) pPrincipal).getVar() - 9);
-//						if (((JPanelFondo) pPrincipal).getVar() <= -18840) {
-//							((JPanelFondo) pPrincipal).setVar(-18840);
-//						} else {
-//							if (teclaPulsada[1] && !teclaPulsada[2]) {
-//								Mundo.moverObjetoI();
-//							}
-//						}
-//					}
-//				}
-//				
-//				if (!Mundo.interseccion2()) {
-//					if ((teclaPulsada[2] && !teclaPulsada[0]) || (teclaPulsada[2] && teclaPulsada[0])) {
+//			}
+////				 IZQUIERDA
+////				 IZQUIERDA
+//				if (!Mundo.interseccionDerecha()) {
+//					if (teclaPulsada[2]) {
 //						Mario.getGrafico().setComponentOrientationEspejo();
-//						((JPanelFondo) pPrincipal).setVar(((JPanelFondo) pPrincipal).getVar() + 9);
-//						if (((JPanelFondo) pPrincipal).getVar() >= -60) {
-//							((JPanelFondo) pPrincipal).setVar(-60);
-//						} else {
-//							if (teclaPulsada[2] && !teclaPulsada[1]) {
-//								Mundo.moverObjetoD();
-//							}
+//						if(pPrincipal.getVar()<0 && Mario.getPosX()<=1150){
+//							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
+//							Mundo.moverObjetoD(Mario.velX);
+//							System.out.println("a");
+//							Mario.setPosX(Mario.getPosX()+Mario.velX);
+//							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
+//							Mundo.moverObjetoD(Mario.velX);
+//						}else if (pPrincipal.getVar()<0 && Mario.getPosX()>1150){
+//							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
+//							Mundo.moverObjetoD(Mario.velX);
+//						}else if (pPrincipal.getVar()>=0){
+//							Mario.setPosX(Mario.getPosX()-Mario.velX);
 //						}
 //					}
-//				}
-//				
-//				Mundo.caida();
-//				if (Mario.getPosY() >= 1100) {
-//					Mario.setVida(0);
-//				}
-//				
-//				if(Mario.getVida()==0){
-//					Mario.caida = false;
-//					Mario.salto = false;
-//					sigo=false;
-//				}
+//				}		
 			}
 		}
 		/** Ordena al hilo detenerse en cuanto sea posible
 		 */
 		public void acaba() {
-			Mundo.detenerAudio();
+			ClipNivel.stop();
 			sigo = false;
 			VentJuego.dispose();
 		}
