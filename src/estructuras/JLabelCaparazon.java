@@ -13,14 +13,14 @@ public class JLabelCaparazon extends JLabel {
 	
 	public static final int TAMANYO_BLOQUE = 24; // píxels (igual ancho que largo)
 	
-	
+	public int velX;
 
 	/**
 	 * Construye y devuelve el JLabel del Bloque con su gráfico y tamaño
 	 */
 	
 	public JLabelCaparazon() {
-		
+		velX=2;
 		try {
 
 			setIcon(new ImageIcon(JLabelCaparazon.class.getResource("/imagenes/CaparazonVerde.png").toURI().toURL()));
@@ -52,4 +52,13 @@ public class JLabelCaparazon extends JLabel {
 		g2.drawImage(img, 0, 0, TAMANYO_BLOQUE, TAMANYO_BLOQUE, null);
 	
 	}
+
+	public int getVelX() {
+		return velX;
+	}
+
+	public void setVelX(int velX) {
+		this.velX = velX;
+	}
+	
 }

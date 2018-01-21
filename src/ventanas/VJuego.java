@@ -45,6 +45,7 @@ public class VJuego extends JFrame {
 	AudioClip ClipMuerte= Applet.newAudioClip(this.getClass().getResource("/sonidos/Muerte.wav"));
 	AudioClip ClipMoneda1= Applet.newAudioClip(this.getClass().getResource("/sonidos/Moneda.wav"));
 	AudioClip ClipMoneda2= Applet.newAudioClip(this.getClass().getResource("/sonidos/Moneda.wav"));
+	AudioClip ClipStomp= Applet.newAudioClip(this.getClass().getResource("/sonidos/Stomp.wav"));
 	Mundo Mundo; // Mundo que crearemos
 	Mario Mario; // Mario del juego
 	MiRunnable miHilo = null; // Hilo del bucle principal de juego
@@ -207,8 +208,33 @@ public class VJuego extends JFrame {
 					pPrincipal.repaint();
 				} catch (Exception e) {
 				}
-			//Interacciones con los ladrillos(setas,goombas etc) FALTA
 				
+				//GOOMBAS/CAPARAZONES
+				//GOOMBAS/CAPARAZONES
+				Mundo.movimientoEnemigosX();
+				Mundo.interseccionGoombasDerecha();
+				Mundo.interseccionGoombasIzquierda();
+				Mundo.interseccionCaparazonesIzquierda();
+				Mundo.interseccionCaparazonesDerecha();
+				
+				//Interacciones con goombas y caparazones FALTA
+				//Interacciones con goombas y caparazones FALTA
+				if(Mundo.interseccionCaparazonArriba()){
+					Mario.saltoMario();
+					ClipStomp.play();
+				}
+				if(Mundo.interseccionGoombaArriba()){
+					Mario.saltoMario();
+					ClipStomp.play();
+				}
+				if(Mundo.interseccionCaparazonAbajo()){
+					ClipMuerte.play();
+					acaba();
+				}
+				if(Mundo.interseccionGoombaAbajo()){
+					ClipMuerte.play();
+					acaba();
+				}
 				//MONEDAS
 				//MONEDAS
 			if(Mundo.interseccionMonedasPares()){
@@ -233,9 +259,9 @@ public class VJuego extends JFrame {
 				VentJuego.dispose();
 				
 			}
-			if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
-				finalVisto=true;
-			}
+//			if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
+//				finalVisto=true;
+//			}
 			
 				// QUIETO
 				// QUIETO
@@ -251,6 +277,7 @@ public class VJuego extends JFrame {
 				// GRAVEDAD VERTICAL SALTOS
 
 			Mario.setPosY(Mario.getPosY()+Mario.velY);
+			
 			if (Mario.getPosY()>400){
 				ClipMuerte.play();
 				acaba();
@@ -258,9 +285,7 @@ public class VJuego extends JFrame {
 			if (Mundo.interseccionArriba()){
 				Mario.velY=0;
 				if (teclaPulsada[0]){
-					Mario.getGrafico().setComponentOrientationSalto();
-					Mario.salto=true;
-					Mario.velY=Mario.velY-1;
+					Mario.saltoMario();
 					ClipSalto.play();
 				}
 			}
@@ -293,12 +318,12 @@ public class VJuego extends JFrame {
 			if (teclaPulsada[1]) {
 //				System.out.println(pPrincipal.getVar());
 				Mario.getGrafico().setComponentOrientationNormal();
-				if(finalVisto==false){
+				if(pPrincipal.getVar() > (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
 					pPrincipal.setVar(pPrincipal.getVar()-Mario.velX);
 					Mundo.moverObjetoI(Mario.velX);
 				}
 				
-				if(finalVisto==true){
+				if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
 					Mario.setPosX(Mario.getPosX()+Mario.velX);
 				}
 			}
@@ -308,11 +333,11 @@ public class VJuego extends JFrame {
 			if (!Mundo.interseccionDerecha()) {
 				if (teclaPulsada[2]) {
 					Mario.getGrafico().setComponentOrientationEspejo();
-					if(pPrincipal.getVar() < 0 && finalVisto==false){
+					if(pPrincipal.getVar() < 0){
 						pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
 						Mundo.moverObjetoD(Mario.velX);
 					}
-					if(finalVisto==true){
+					else if(pPrincipal.getVar() <= (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()-7320){
 						Mario.setPosX(Mario.getPosX()-Mario.velX);
 					}
 				}
@@ -348,7 +373,6 @@ public class VJuego extends JFrame {
 //						if(pPrincipal.getVar()<0 && Mario.getPosX()<=1150){
 //							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
 //							Mundo.moverObjetoD(Mario.velX);
-//							System.out.println("a");
 //							Mario.setPosX(Mario.getPosX()+Mario.velX);
 //							pPrincipal.setVar(pPrincipal.getVar()+Mario.velX);
 //							Mundo.moverObjetoD(Mario.velX);

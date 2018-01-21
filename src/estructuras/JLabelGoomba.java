@@ -14,14 +14,14 @@ public class JLabelGoomba extends JLabel {
 	public static final int ALTO_GOOMBA = 24; // píxels (igual ancho que largo)
 	public static final int ANCHO_GOOMBA = 27;
 	
-	
+	public int velX;
 
 	/**
 	 * Construye y devuelve el JLabel del Bloque con su gráfico y tamaño
 	 */
 	
 	public JLabelGoomba() {
-		
+		velX=1;
 		try {
 
 			setIcon(new ImageIcon(JLabelGoomba.class.getResource("/Imagenes/Goomba.png").toURI().toURL()));
@@ -53,4 +53,14 @@ public class JLabelGoomba extends JLabel {
 		g2.drawImage(img, 0, 0, ALTO_GOOMBA, ANCHO_GOOMBA, null);
 	
 	}
+
+	public int getVelX() {
+		return velX;
+	}
+
+	public void setVelX(int velX) {
+		this.velX = velX;
+	}
+	
+	
 }

@@ -97,31 +97,10 @@ public class Mario extends Personaje{
 	 * Método que implementa el salto de este personaje 
 	 */
 
-//	public void saltoMario() {
-//		if (salto && cont) {
-//			gravedad = gravedad - 20;
-//			this.setPosY(gravedad);
-//			if (this.getPosY() == this.gravedadFija - 440 || this.getPosY() <= 0) {
-//				cont = false;
-//				caida = true;
-//			}
-//		}
-//		
-//		if (!mundo.apoyo() && this.getPosY() != 860 && !salto) {
-//			caida = true;
-//		}
-//		if (caida && !mundo.apoyo()) {
-//			if (this.getPosY() == 860 && !mundo.caida()) {
-//				caida = false;
-//			} else if (caida) {
-//				gravedad = gravedad + 20;
-//				this.setPosY(gravedad);
-//				if (this.getPosY() == 860 || mundo.apoyo()) {
-//					salto = false;
-//					caida = false;
-//				}
-//			}
-//		}
-//	}
+	public void saltoMario() {
+		getGrafico().setComponentOrientationSalto();
+		salto=true;
+		velY=-1;
+	}
 }
 
