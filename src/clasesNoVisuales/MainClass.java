@@ -1,14 +1,12 @@
-package clasesNoVisuales;
-
-import ventanas.VentanaMenuPrincipal;
-
-public class MainClass {
-	
-	static VentanaMenuPrincipal vp;
-
-	public static void main(String[] args) {
-		vp.inicializarMenuPrincipal();
-
-	}
-
-}
+//package clasesNoVisuales;
+//
+//import ventanas.VInicio;
+//
+//public class MainClass {
+//
+//	public static void main(String[] args) {
+//		VInicio.inicializarMenuPrincipal();
+//
+//	}
+//
+//}

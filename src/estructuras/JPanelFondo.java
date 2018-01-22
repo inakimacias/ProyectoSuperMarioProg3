@@ -8,9 +8,6 @@ import javax.swing.JPanel;
 
 public class JPanelFondo extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public int var=0;
 	
@@ -25,6 +22,8 @@ public class JPanelFondo extends JPanel {
 		//Como no estamos usando un Jlabel no podemos utilizar el set Icon, asi que lo crearemos con el método ImageIcon
 		ImageIcon imagenFondo = new ImageIcon(getClass().getResource("/Imagenes/Nivel-1.png"));
 		g.drawImage(imagenFondo.getImage(),var,0,7337, 350, null);
+		setOpaque(false);
+		super.paintComponent(g);
 		}
 
 

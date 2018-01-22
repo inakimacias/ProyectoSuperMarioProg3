@@ -33,13 +33,15 @@ public class VJuego extends JFrame {
 	/**
 	 * 
 	 */
+	private VInicio Vinicio;
 	public VJuego VentJuego=this;
+	
 	private static final long serialVersionUID = 1L;
 	private JPanelFondo pPrincipal;
 	boolean[] teclaPulsada = new boolean[4];
+	boolean hiloSigue=true;
 	boolean finalVisto=false;
 	boolean MarioAndando=false;
-	int estadoMoneda=0;
 	AudioClip ClipNivel= Applet.newAudioClip(this.getClass().getResource("/sonidos/Level1Song.wav"));
 	AudioClip ClipSalto= Applet.newAudioClip(this.getClass().getResource("/sonidos/Salto.wav"));
 	AudioClip ClipMuerte= Applet.newAudioClip(this.getClass().getResource("/sonidos/Muerte.wav"));
@@ -62,8 +64,8 @@ public class VJuego extends JFrame {
 	 * Create the frame.
 	 */
 	
-	public VJuego(VentanaMenuPrincipal vmp) {
-		
+	public VJuego(VInicio vinicio) {
+		Vinicio=vinicio;
 		setResizable(false);
 		setSize((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(),345);
 		setLocationRelativeTo(null);
@@ -73,11 +75,6 @@ public class VJuego extends JFrame {
 		pPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(pPrincipal);
 		pPrincipal.setLayout(null);
-		
-//		JLabelMario LabelMario = new JLabelMario();
-//		LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAndando.png")));
-//		LabelMario.setBounds(145, 302, 23, 31);
-//		pPrincipal.add(LabelMario);
 	
 		pPrincipal.addKeyListener(new KeyAdapter() {
 			@Override
@@ -89,36 +86,16 @@ public class VJuego extends JFrame {
 				}
 				case KeyEvent.VK_D: {
 					teclaPulsada[1] = true;
-//					if(LabelMario.getIcon().toString().endsWith("MarioEspejo.png")){
-//						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAndando.png")));
-//					}else if(LabelMario.getIcon().toString().endsWith("MarioAgachadoI.png")){
-//						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAgachadoD.png")));
-//					}
-//					pPrincipal.setVar(pPrincipal.getVar()-5);
-//					pPrincipal.repaint();
 					break;
 				}
 				case KeyEvent.VK_A: {
 					teclaPulsada[2] = true;
-//					if(LabelMario.getIcon().toString().endsWith("MarioAndando.png")){
-//						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioEspejo.png")));
-//					} else if(LabelMario.getIcon().toString().endsWith("MarioAgachadoD.png")){
-//						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAgachadoI.png")));
-//					}
-//					pPrincipal.setVar(pPrincipal.getVar()+5);
-//					pPrincipal.repaint();
 					break;
 				}
-//				case KeyEvent.VK_S: {
-//					teclaPulsada[3] = true;
-//					System.out.println("down-pressed");
-////					if(LabelMario.getIcon().toString().endsWith("MarioAndando.png")){
-////						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAgachadoD.png")));
-////					}else if(LabelMario.getIcon().toString().endsWith("MarioEspejo.png")){
-////						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAgachadoI.png")));
-////					}
-//					break;
-//				}
+				case KeyEvent.VK_ESCAPE: {
+					teclaPulsada[3] = true;
+					break;
+				}
 				}
 			}
 		});
@@ -141,29 +118,16 @@ public class VJuego extends JFrame {
 					teclaPulsada[2] = false;
 					break;
 				}
-//				case KeyEvent.VK_S: {
-//					teclaPulsada[3] = false;
-//					System.out.println("down-released");
-////					if(LabelMario.getIcon().toString().endsWith("MarioAgachadoD.png")){
-////						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioAndando.png")));
-////					}else if(LabelMario.getIcon().toString().endsWith("MarioAgachadoI.png")){
-////						LabelMario.setIcon(new ImageIcon(VJuego.class.getResource("Imagenes/MarioEspejo.png")));
-////					}
-//					break;
-//				}
+				case KeyEvent.VK_ESCAPE: {
+					teclaPulsada[3] = false;
+					break;
+				}
 				}
 			}
 	
 		});
 		
 		pPrincipal.setFocusable(true);
-		pPrincipal.requestFocus();
-		pPrincipal.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				pPrincipal.requestFocus();
-			}
-		});
 		
 		// Cierre del hilo al cierre de la ventana
 		addWindowListener(new WindowAdapter() {
@@ -175,7 +139,7 @@ public class VJuego extends JFrame {
 		});
 		
 	}
-	
+
 	public void Arranque() { 					// Crea y visibiliza la ventana con los objetos
 		
 		
@@ -196,18 +160,33 @@ public class VJuego extends JFrame {
 	}
 	
 	
-	class MiRunnable implements Runnable { 
-		boolean sigo = true;
+	public boolean isHiloSigue() {
+		return hiloSigue;
+	}
+
+
+	public void setHiloSigue(boolean hiloSigue) {
+		this.hiloSigue = hiloSigue;
+	}
+
+
+	class MiRunnable implements Runnable {
 		@Override
 		public void run() { // Bucle principal forever hasta que se pare el juego...
 			InicializadorArray();
-			while (sigo) {
+			while (isHiloSigue()) {
 				try {
 					pPrincipal.repaint();
 					Thread.sleep(3);
 					pPrincipal.repaint();
 				} catch (Exception e) {
-				}
+				};
+				
+				if(teclaPulsada[3]==true){
+					setHiloSigue(false);
+					VPausa vpausa = new VPausa(Vinicio,VentJuego);
+					vpausa.setVisible(true);
+				};
 				
 				//GOOMBAS/CAPARAZONES
 				//GOOMBAS/CAPARAZONES
@@ -390,7 +369,7 @@ public class VJuego extends JFrame {
 		 */
 		public void acaba() {
 			ClipNivel.stop();
-			sigo = false;
+			setHiloSigue(false);
 			VentJuego.dispose();
 		}
 	};

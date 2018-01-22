@@ -48,7 +48,7 @@ public class VentanaMenuPrincipal extends JFrame {
 		JButton btnNewButton = new JButton("JUGAR");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				VJuego ventana2 = new VJuego(vmp);
+				VJuego ventana2 = new VJuego();
 				ventana2.dispose();
 				ventana2.setVisible(true);
 				ventana2.Arranque();
