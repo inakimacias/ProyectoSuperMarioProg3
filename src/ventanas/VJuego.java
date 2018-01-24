@@ -2,34 +2,22 @@ package ventanas;
 
 import java.applet.Applet;
 import java.applet.AudioClip;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.sql.Connection;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 
-import estructuras.JLabelMario;
 import estructuras.JPanelFondo;
 import clasesNoVisuales.Mario;
 import clasesNoVisuales.Mundo;
 
-import java.awt.Dimension;
 import javax.swing.JLabel;
-import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
@@ -206,6 +194,7 @@ public class VJuego extends JFrame {
 			secLeft=59;
 			minLeft--;
 		}
+		VentJuego.miHilo.acabaMuerto();
 	}
 	
 	private static void delaySegundo(){
@@ -428,7 +417,7 @@ public class VJuego extends JFrame {
 			ClipNivel.stop();
 			sigo=false;
 			setHiloSigue(false);
-			VFinalBuena VFB = new VFinalBuena(Vinicio,VentJuego,Score);
+			VFinalBuena VFB = new VFinalBuena(Vinicio,VentJuego,Score,minLeft,secLeft);
 			VentJuego.dispose();
 			VFB.setVisible(true);
 		}

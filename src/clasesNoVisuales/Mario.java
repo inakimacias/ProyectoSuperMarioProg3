@@ -1,5 +1,4 @@
 package clasesNoVisuales;
-import javax.swing.JPanel;
 
 import estructuras.JLabelMario;
 
@@ -14,7 +13,6 @@ public class Mario extends Personaje{
 	public boolean salto; // Atributo que guarda si Mario ha realizado un salto
 	public boolean caida; // Atributo que guarda si ha habido o no una caida
 	public boolean cont; // Atributo contador
-	private Mundo mundo; // Atributo que guarda el mundo del juego
 	public int velY;
 	public int velX;
 	

@@ -1,7 +1,11 @@
 package BD;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SqliteBD {
+	
+	public static ArrayList<String> aNombre = new ArrayList<>();
+	public static ArrayList<Integer> aScores = new ArrayList<>();
 	
 	// Inicializa la conexion
 		public static Connection initBD( String nombreBD ) {
@@ -84,6 +88,8 @@ public class SqliteBD {
 			try {
 				rs = Stmt.executeQuery("Select * from usuario order by Score desc");
 				while (rs.next()) {
+					aNombre.add(rs.getString(1));
+					aScores.add(rs.getInt(2));
 					System.out.println("Nombre: " + rs.getString(1));
 					System.out.println("Score: " + rs.getInt(2));
 				}

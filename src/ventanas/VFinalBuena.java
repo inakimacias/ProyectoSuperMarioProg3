@@ -1,8 +1,5 @@
 package ventanas;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -13,19 +10,21 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.awt.event.ActionEvent;
-import javax.swing.border.TitledBorder;
 
 import Atxy2k.CustomTextField.RestrictedTextField;
 
 public class VFinalBuena extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField TextoNombre;
 	private VInicio Vinicio;
 	
-	public VFinalBuena(VInicio vinicio, VJuego vjuego, int Score) {
+	public VFinalBuena(VInicio vinicio, VJuego vjuego, int Score, int minRest, int secRest) {
 		Vinicio=vinicio;
 		setBackground(Color.WHITE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,7 +74,8 @@ public class VFinalBuena extends JFrame {
 		JButton BotonSave = new JButton();
 		BotonSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Vinicio.miBD.InsertarUsuario(Vinicio.miConexion, TextoNombre.getText(), Score);
+				int ScoreTotal=(Score+((minRest*60)+secRest));
+				Vinicio.miBD.InsertarUsuario(Vinicio.miConexion, TextoNombre.getText(), ScoreTotal);
 				TextoNombre.setEditable(false);
 			}
 		});
@@ -94,7 +94,7 @@ public class VFinalBuena extends JFrame {
 		LabelHasGanado.setBounds(400, 120, 150, 20);
 		LabelFondo.add(LabelHasGanado);
 		
-		JLabel LabelScore = new JLabel(""+Score);
+		JLabel LabelScore = new JLabel(Score+" + "+((minRest*60)+secRest)+" seg restantes");
 		LabelScore.setBounds(400, 140, 150, 20);
 		LabelFondo.add(LabelScore);
 		

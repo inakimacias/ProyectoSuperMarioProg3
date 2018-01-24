@@ -19,13 +19,6 @@ public class Personaje {
 	
 
 	public Personaje() {
-		this.posX = posX;
-		this.posY = posY;
-		this.nombre = nombre;
-		this.caida=false;
-		this.vida=vida;
-		this.monedas=monedas;
-
 	}
 	
 	/**

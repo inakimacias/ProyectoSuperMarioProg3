@@ -1,8 +1,6 @@
 package ventanas;
 
-import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,7 +14,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.ActionEvent;
 
 public class VPausa extends JFrame {
-
+	
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	
 	public VPausa(VInicio vinicio, VJuego vjuego) {

@@ -1,12 +1,6 @@
 package estructuras;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class JLabelRectangulo extends JLabel {

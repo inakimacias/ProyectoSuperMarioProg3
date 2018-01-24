@@ -1,15 +1,10 @@
 package clasesNoVisuales;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
-import java.awt.Rectangle;
-import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
 import estructuras.JLabelBloque;
 import estructuras.JLabelCaparazon;
@@ -23,6 +18,8 @@ public class Mundo {
 	public JPanelFondo panel; // Atributo del panel visual del juego
 	static Mario Mario; // Atributo que contiene al Mario del juego
 	ImageIcon MiImageIcon=null;
+	ImageIcon MiImagenMarioD=null;
+	ImageIcon MiImagenMarioI=null;
 	
 	public boolean apoyo;
 	JLabelBloque Bloque; // Atributo Jlabel para bloque
@@ -31,6 +28,7 @@ public class Mundo {
 	JLabelGoomba Goomba;
 	JLabelMoneda Moneda;
 	public int EstadoMonedas;
+	public int EstadoMario;
 	
 	public double gravedad;
 	public double gravedadAcumulada;
@@ -51,6 +49,7 @@ public class Mundo {
 		gravedad=0.01;
 		gravedadAcumulada=0;
 		EstadoMonedas=0;
+		EstadoMario=0;
 		velocidadGoombasX=1;
 		velocidadCaparazonesX=2;
 		velocidadGoombasY=1;
@@ -79,6 +78,16 @@ public class Mundo {
 		for (int i = 0; i < aMonedas.size(); i++) {
 			aMonedas.get(i).setIcon(MiImageIcon);
 		}
+	}
+	
+	public void mueveMarioDerecha(){
+		try {
+			MiImagenMarioD = new ImageIcon(JLabelMario.class.getResource("/imagenes/Mario"+(int)(EstadoMario/10)+".png").toURI().toURL());
+		} catch (MalformedURLException | URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Mario.getGrafico().setIcon(MiImagenMarioD);
 	}
 	
 	public void creaMonedas(){

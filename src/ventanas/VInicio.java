@@ -23,6 +23,7 @@ public class VInicio extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private VInicio vinicio = this;
+	JtableTabla jtt = new JtableTabla();
 	
 	static SqliteBD miBD;
 	static Connection miConexion;
@@ -90,6 +91,9 @@ public class VInicio extends JFrame {
 		BotonRanking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				miBD.ObtenerUsuarios(miConexion);
+				jtt.abrirJTable();
+				dispose();
+				
 			}
 		});
 		BotonRanking.setIcon(new ImageIcon(VInicio.class.getResource("/imagenes/Ranking.png")));
