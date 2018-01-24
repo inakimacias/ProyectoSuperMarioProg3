@@ -25,8 +25,8 @@ public class VPausa extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setContentPane(contentPane);
 		addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -34,12 +34,12 @@ public class VPausa extends JFrame {
 			}
 		});
 		
-		JLabel FondoPausa = new JLabel("");
+		JLabel FondoPausa = new JLabel();
 		FondoPausa.setIcon(new ImageIcon(VPausa.class.getResource("/imagenes/ImagenPausa.png")));
 		FondoPausa.setBounds(0, 0, 272, 292);
 		contentPane.add(FondoPausa);
 		
-		JButton BotonResume = new JButton("");
+		JButton BotonResume = new JButton();
 		BotonResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Resume");
@@ -49,16 +49,16 @@ public class VPausa extends JFrame {
 		});
 		BotonResume.setIcon(new ImageIcon(VPausa.class.getResource("/imagenes/Resume.png")));
 		BotonResume.setBounds(18, 84, 232, 46);
-		contentPane.add(BotonResume);
 		BotonResume.setBorderPainted(false);
 		BotonResume.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		BotonResume.setVisible(true);
+		FondoPausa.add(BotonResume);
 		
-		JButton BotonRestart = new JButton("");
+		JButton BotonRestart = new JButton();
 		BotonRestart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Restart");
-				vjuego.miHilo.acaba();
+				vjuego.miHilo.stop();
+				vjuego.dispose();
 				VJuego ventana2 = new VJuego(vinicio);
 				ventana2.dispose();
 				ventana2.setVisible(true);
@@ -68,25 +68,26 @@ public class VPausa extends JFrame {
 		});
 		BotonRestart.setIcon(new ImageIcon(VPausa.class.getResource("/imagenes/Restart.png")));
 		BotonRestart.setBounds(20, 149, 232, 46);
-		contentPane.add(BotonRestart);
 		BotonRestart.setBorderPainted(false);
 		BotonRestart.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		BotonRestart.setVisible(true);
+		FondoPausa.add(BotonRestart);
 		
-		JButton BotonMenu = new JButton("");
+		
+		JButton BotonMenu = new JButton();
 		BotonMenu.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Menu");
-				vjuego.miHilo.acaba();
+				vjuego.miHilo.stop();
 				vinicio.setVisible(true);
 				dispose();
 			}
 		});
 		BotonMenu.setIcon(new ImageIcon(VPausa.class.getResource("/imagenes/Menu.png")));
 		BotonMenu.setBounds(22, 216, 233, 47);
-		contentPane.add(BotonMenu);
-		BotonMenu.setBorderPainted(false);
 		BotonMenu.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		BotonMenu.setBorderPainted(false);
+		FondoPausa.add(BotonMenu);
+		
 		
 		setUndecorated(true);
 	}

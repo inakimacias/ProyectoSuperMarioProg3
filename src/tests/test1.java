@@ -8,7 +8,6 @@ import org.junit.Assert;
 
 import clasesNoVisuales.Mario;
 import ventanas.VJuego;
-import ventanas.VentanaMenuPrincipal;
 
 public class test1 {
 	

@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.sql.Connection;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,6 +28,10 @@ import clasesNoVisuales.Mundo;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class VJuego extends JFrame {
 
@@ -36,9 +41,15 @@ public class VJuego extends JFrame {
 	private VInicio Vinicio;
 	public VJuego VentJuego=this;
 	
+	private int Score;
+	public int minLeft;
+	public int secLeft;
+	private JLabel LabelTemp;
+	private JLabel LabelScore;
 	private static final long serialVersionUID = 1L;
 	private JPanelFondo pPrincipal;
 	boolean[] teclaPulsada = new boolean[4];
+	boolean sigo=true;
 	boolean hiloSigue=true;
 	boolean finalVisto=false;
 	boolean MarioAndando=false;
@@ -51,18 +62,7 @@ public class VJuego extends JFrame {
 	Mundo Mundo; // Mundo que crearemos
 	Mario Mario; // Mario del juego
 	MiRunnable miHilo = null; // Hilo del bucle principal de juego
-			
-	
-	public void InicializadorArray() {
-		for (int i = 0; i < teclaPulsada.length; i++) {
-			teclaPulsada[i] = false;
-		}
-	}
-
-
-	/**
-	 * Create the frame.
-	 */
+	MiRunnable1 miHilo1 = null; // Hilo del cronometro
 	
 	public VJuego(VInicio vinicio) {
 		Vinicio=vinicio;
@@ -72,6 +72,7 @@ public class VJuego extends JFrame {
 		this.setUndecorated(true);                         //ESTO SIRVE PARA QUITAR BORDES
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pPrincipal = new JPanelFondo();
+		pPrincipal.setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
 		pPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(pPrincipal);
 		pPrincipal.setLayout(null);
@@ -129,12 +130,28 @@ public class VJuego extends JFrame {
 		
 		pPrincipal.setFocusable(true);
 		
+		LabelTemp = new JLabel(":");
+		LabelTemp.setHorizontalAlignment(SwingConstants.CENTER);
+		LabelTemp.setBackground(Color.GREEN);
+		LabelTemp.setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
+		LabelTemp.setBounds(289, 11, 70, 25);
+		LabelTemp.setOpaque(true);
+		pPrincipal.add(LabelTemp);
+		
+		LabelScore = new JLabel("Score: 0");
+		LabelScore.setBackground(Color.GREEN);
+		LabelScore.setHorizontalAlignment(SwingConstants.CENTER);
+		LabelScore.setFont(new Font("Segoe UI Black", Font.PLAIN, 14));
+		LabelScore.setBounds(390, 11, 70, 25);
+		LabelScore.setOpaque(true);
+		pPrincipal.add(LabelScore);
+		
 		// Cierre del hilo al cierre de la ventana
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				if (miHilo != null)
-					miHilo.acaba();
+					miHilo.acabaMuerto();
 			}
 		});
 		
@@ -144,6 +161,9 @@ public class VJuego extends JFrame {
 		
 		
 		this.Mundo = new Mundo(this.pPrincipal);
+		
+		this.Score = 0;
+		
 		this.Mario = new Mario();
 		this.Mundo.creaMario(145,290);
 		this.Mario = this.Mundo.getMario();
@@ -152,11 +172,18 @@ public class VJuego extends JFrame {
 		this.Mundo.creaMonedas();
 		this.Mundo.creaCaparazones();
 		this.Mundo.creaGoombas();
+		this.secLeft=0;
+		this.minLeft=2;
+		
 		ClipNivel.loop();
 		
 		this.miHilo = this.new MiRunnable(); 	// Sintaxis de new para clase interna
-		Thread nuevoHilo = new Thread(this.miHilo);
+		Thread nuevoHilo = new Thread(miHilo);
 		nuevoHilo.start();
+		
+		this.miHilo1 = this.new MiRunnable1(); 	// Sintaxis de new para clase interna
+		Thread nuevoHilo1 = new Thread(miHilo1);
+		nuevoHilo1.start();
 	}
 	
 	
@@ -168,25 +195,49 @@ public class VJuego extends JFrame {
 	public void setHiloSigue(boolean hiloSigue) {
 		this.hiloSigue = hiloSigue;
 	}
-
-
+	
+	public void cronometro(){
+		while(minLeft>=0 && isHiloSigue()){
+			while(secLeft>=0 && isHiloSigue()){
+				delaySegundo();
+				LabelTemp.setText(minLeft+":"+secLeft);
+				secLeft--;
+			}
+			secLeft=59;
+			minLeft--;
+		}
+	}
+	
+	private static void delaySegundo(){
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {}
+	}
+	
+	class MiRunnable1 implements Runnable {
+		public void run() {
+			cronometro();
+		}
+	}
 	class MiRunnable implements Runnable {
-		@Override
+		
 		public void run() { // Bucle principal forever hasta que se pare el juego...
-			InicializadorArray();
-			while (isHiloSigue()) {
+			while (sigo){
+				
+				if(isHiloSigue()) {
+					
 				try {
 					pPrincipal.repaint();
 					Thread.sleep(3);
 					pPrincipal.repaint();
 				} catch (Exception e) {
-				};
+				}
 				
 				if(teclaPulsada[3]==true){
 					setHiloSigue(false);
 					VPausa vpausa = new VPausa(Vinicio,VentJuego);
 					vpausa.setVisible(true);
-				};
+				}
 				
 				//GOOMBAS/CAPARAZONES
 				//GOOMBAS/CAPARAZONES
@@ -201,26 +252,32 @@ public class VJuego extends JFrame {
 				if(Mundo.interseccionCaparazonArriba()){
 					Mario.saltoMario();
 					ClipStomp.play();
+					Score=Score+12;
+					LabelScore.setText("Score: "+Score);
 				}
 				if(Mundo.interseccionGoombaArriba()){
 					Mario.saltoMario();
 					ClipStomp.play();
+					Score=Score+8;
+					LabelScore.setText("Score: "+Score);
 				}
 				if(Mundo.interseccionCaparazonAbajo()){
-					ClipMuerte.play();
-					acaba();
+					acabaMuerto();
 				}
 				if(Mundo.interseccionGoombaAbajo()){
-					ClipMuerte.play();
-					acaba();
+					acabaMuerto();
 				}
 				//MONEDAS
 				//MONEDAS
 			if(Mundo.interseccionMonedasPares()){
 				ClipMoneda1.play();
+				Score=Score+1;
+				LabelScore.setText("Score: "+Score);
 			}
 			if(Mundo.interseccionMonedasImpares()){
 				ClipMoneda2.play();
+				Score=Score+1;
+				LabelScore.setText("Score: "+Score);
 			}
 			Mundo.mueveMonedas();
 			Mundo.EstadoMonedas++;
@@ -234,7 +291,7 @@ public class VJuego extends JFrame {
 				// FINAL
 				// FINAL
 			if(Mario.getPosX()>1250){
-				acaba();
+				acabaVivo();
 				VentJuego.dispose();
 				
 			}
@@ -258,8 +315,7 @@ public class VJuego extends JFrame {
 			Mario.setPosY(Mario.getPosY()+Mario.velY);
 			
 			if (Mario.getPosY()>400){
-				ClipMuerte.play();
-				acaba();
+				acabaMuerto();
 			}
 			if (Mundo.interseccionArriba()){
 				Mario.velY=0;
@@ -363,14 +419,34 @@ public class VJuego extends JFrame {
 //						}
 //					}
 //				}		
+				}
 			}
 		}
 		/** Ordena al hilo detenerse en cuanto sea posible
 		 */
-		public void acaba() {
+		public void acabaVivo() {
 			ClipNivel.stop();
+			sigo=false;
 			setHiloSigue(false);
+			VFinalBuena VFB = new VFinalBuena(Vinicio,VentJuego,Score);
 			VentJuego.dispose();
+			VFB.setVisible(true);
+		}
+		
+		public void acabaMuerto() {
+			ClipNivel.stop();
+			ClipMuerte.play();
+			sigo=false;
+			setHiloSigue(false);
+			VFinalMala VFM = new VFinalMala(Vinicio,VentJuego);
+			VentJuego.dispose();
+			VFM.setVisible(true);
+		}
+		public void stop() {
+			ClipNivel.stop();
+			sigo=false;
+			VentJuego.dispose();
+			setHiloSigue(false);
 		}
 	};
 }
